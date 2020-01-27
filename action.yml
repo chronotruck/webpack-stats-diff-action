@@ -8,6 +8,9 @@ inputs:
   head_stats_path:
     description: 'Webpack generated "stats.json" file path from the head branch'
     required: true
+  token:
+    description: 'Github generated token'
+    required: true
 branding:
   icon: 'package'
   color: 'green'
