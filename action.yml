@@ -1,0 +1,16 @@
+name: Webpack stats difference
+author: William DA SILVA
+description: 'Creates a comment in the pull-request comparing two Webpack stats files.'
+inputs:
+  base_stats_path:
+    description: 'Webpack generated "stats.json" file path from the base branch'
+    required: true
+  head_stats_path:
+    description: 'Webpack generated "stats.json" file path from the head branch'
+    required: true
+branding:
+  icon: 'package'
+  color: 'green'
+runs:
+  using: 'node12'
+  main: 'index.js'
