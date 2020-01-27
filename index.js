@@ -3,7 +3,7 @@ const fs = require('fs')
 const github = require('@actions/github')
 const core = require('@actions/core')
 const { getStatsDiff } = require('webpack-stats-diff')
-const prettySize = require('prettysize')
+const fileSize = require('filesize')
 const markdownTable = require('markdown-table')
 
 const doesPathExists = path => {
@@ -41,9 +41,9 @@ async function run() {
         'Diff'
       ],
       [
-        prettySize(diff.total.oldSize),
-        prettySize(diff.total.newSize), 
-        `${prettySize(diff.total.diff)} (${diff.total.diffPercentage.toFixed(2)}%)`
+        fileSize(diff.total.oldSize),
+        fileSize(diff.total.newSize), 
+        `${fileSize(diff.total.diff)} (${diff.total.diffPercentage.toFixed(2)}%)`
       ]
     ])
     
@@ -61,8 +61,7 @@ async function run() {
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
       issue_number: pullRequestId,
-      body: `# Bundle difference
-## Total summary
+      body: `## Bundle difference
 ${summaryTable}
 `
     })
