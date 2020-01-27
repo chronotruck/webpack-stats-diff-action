@@ -1,0 +1,15 @@
+name: "Chunk difference"
+on:
+  pull_request:
+
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Diff
+      uses: ./
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        base_stats_path: ./demo/base/stats.json
+        head_stats_path: ./demo/head/stats.json
