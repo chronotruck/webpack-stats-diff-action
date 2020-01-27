@@ -1032,8 +1032,7 @@ async function run() {
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
       issue_number: pullRequestId,
-      body: `# Bundle difference
-## Total summary
+      body: `## Bundle difference
 ${summaryTable}
 `
     })
