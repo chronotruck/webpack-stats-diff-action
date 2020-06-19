@@ -888,7 +888,7 @@ async function run() {
     /**
      * Publish a comment in the PR with the diff result.
      */
-    const octokit = new github.GitHub(core.getInput('token'))
+    const octokit = github.getOctokit(core.getInput('token'))
 
     const pullRequestId = github.context.issue.number
     if (!pullRequestId) {
