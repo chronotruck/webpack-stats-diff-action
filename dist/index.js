@@ -836,63 +836,114 @@ module.exports = statsDiff => {
 /***/ 104:
 /***/ (function(__unusedmodule, __unusedexports, __webpack_require__) {
 
-const path = __webpack_require__(622)
-const fs = __webpack_require__(747)
-const github = __webpack_require__(469)
-const core = __webpack_require__(470)
-const { getStatsDiff } = __webpack_require__(41)
-const fileSize = __webpack_require__(283)
-const markdownTable = __webpack_require__(366)
+const path = __webpack_require__(622);
+const fs = __webpack_require__(747);
+const github = __webpack_require__(469);
+const core = __webpack_require__(470);
+const { getStatsDiff } = __webpack_require__(41);
+const fileSize = __webpack_require__(283);
+const markdownTable = __webpack_require__(366);
 
-const doesPathExists = path => {
+const doesPathExists = (path) => {
   if (!fs.existsSync(path)) {
-    throw new Error(`${path} does not exist!`)
+    throw new Error(`${path} does not exist!`);
   }
-}
+};
+
+const SKIP_EXTENSIONS = Symbol("SKIP_EXTENSIONS");
+const ALL_EXTENSIONS = Symbol("ALL_EXTENSIONS");
+
+const parseExtensionExpression = (extensionExpression) =>
+  typeof extensionExpression === "string"
+    ? extensionExpression.length > 0
+      ? extensionExpression.split(",").map((extension) => extension.trim())
+      : SKIP_EXTENSIONS
+    : extensionExpression;
 
 async function run() {
   try {
     const statsPaths = {
-      base: core.getInput('base_stats_path'),
-      head: core.getInput('head_stats_path')
-    }
+      base: core.getInput("base_stats_path"),
+      head: core.getInput("head_stats_path"),
+    };
+
+    const assetGroups = [
+      { name: "all", extensions: ALL_EXTENSIONS },
+      {
+        name: "documents",
+        extensions: parseExtensionExpression(
+          core.getInput("document_extensions")
+        ),
+      },
+      {
+        name: "scripts",
+        extensions: parseExtensionExpression(
+          core.getInput("script_extensions")
+        ),
+      },
+      {
+        name: "stylesheets",
+        extensions: parseExtensionExpression(
+          core.getInput("stylesheet_extensions")
+        ),
+      },
+      {
+        name: "images",
+        extensions: parseExtensionExpression(core.getInput("image_extensions")),
+      },
+      {
+        name: "others",
+        extensions: parseExtensionExpression(core.getInput("other_extensions")),
+      },
+    ];
 
     const paths = {
       base: path.resolve(process.cwd(), statsPaths.base),
-      head: path.resolve(process.cwd(), statsPaths.head)
-    }
+      head: path.resolve(process.cwd(), statsPaths.head),
+    };
 
-    doesPathExists(paths.base)
-    doesPathExists(paths.head)
+    doesPathExists(paths.base);
+    doesPathExists(paths.head);
 
     const assets = {
       base: require(paths.base).assets,
-      head: require(paths.head).assets
-    }
+      head: require(paths.head).assets,
+    };
 
-    const diff = getStatsDiff(assets.base, assets.head, {})
+    const assetGroupStatsDiffs = assetGroups
+      .filter(
+        (assetGroup) => assetGroup.extensions.extensions !== SKIP_EXTENSIONS
+      )
+      .map((assetGroup) => ({
+        group: assetGroup,
+        statsDiff: getStatsDiff(assets.base, assets.head, {
+          extensions:
+            assetGroup.extensions === ALL_EXTENSIONS
+              ? null
+              : assetGroup.extensions,
+        }),
+      }));
 
     const summaryTable = markdownTable([
-      [
-        'Old size',
-        'New size',
-        'Diff'
-      ],
-      [
+      ["Asset group", "Old size", "New size", "Diff"],
+      assetGroupStatsDiffs.map((assetGroupStatsDiff) => [
+        assetGroupStatsDiff.group.name,
         fileSize(diff.total.oldSize),
-        fileSize(diff.total.newSize), 
-        `${fileSize(diff.total.diff)} (${diff.total.diffPercentage.toFixed(2)}%)`
-      ]
-    ])
-    
+        fileSize(diff.total.newSize),
+        `${fileSize(diff.total.diff)} (${diff.total.diffPercentage.toFixed(
+          2
+        )}%)`,
+      ]),
+    ]);
+
     /**
      * Publish a comment in the PR with the diff result.
      */
-    const octokit = github.getOctokit(core.getInput('token'))
+    const octokit = github.getOctokit(core.getInput("token"));
 
-    const pullRequestId = github.context.issue.number
+    const pullRequestId = github.context.issue.number;
     if (!pullRequestId) {
-      throw new Error('Cannot find the PR id.')
+      throw new Error("Cannot find the PR id.");
     }
 
     await octokit.issues.createComment({
@@ -901,15 +952,14 @@ async function run() {
       issue_number: pullRequestId,
       body: `## Bundle difference
 ${summaryTable}
-`
-    })
-  }
-  catch (error) {
-    core.setFailed(error.message)
+`,
+    });
+  } catch (error) {
+    core.setFailed(error.message);
   }
 }
 
-run()
+run();
 
 
 /***/ }),

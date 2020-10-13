@@ -1,5 +1,5 @@
 name: Webpack stats difference
-author: William DA SILVA
+author: William DA SILVA, Felix Stürmer
 description: 'Creates a comment in the pull-request comparing two Webpack stats files.'
 inputs:
   base_stats_path:
@@ -11,6 +11,26 @@ inputs:
   token:
     description: 'Github generated token'
     required: true
+  document_extensions:
+    description: 'A list of extensions to identify document assets by'
+    required: false
+    default: 'html'
+  script_extensions:
+    description: 'A list of extensions to identify script assets by'
+    required: false
+    default: 'js,jsx,ts,tsx'
+  stylesheet_extensions:
+    description: 'A list of extensions to identify stylesheet assets by'
+    required: false
+    default: 'css,ttf'
+  image_extensions:
+    description: 'A list of extensions to identify image assets by'
+    required: false
+    default: 'jpg,jpeg,png,svg'
+  other_extensions:
+    description: 'A list of extensions to identify other assets by'
+    required: false
+    default: ''
 branding:
   icon: 'package'
   color: 'green'

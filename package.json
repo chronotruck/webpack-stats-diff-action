@@ -9,6 +9,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "William DA SILVA <william.da.silva@chronotruck.com>",
+  "contributors": [
+    "Felix Stürmer <stuermer@weltenwort.de>"
+  ],
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.2.4",
