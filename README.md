@@ -14,15 +14,17 @@ with:
   base_stats_path: '/path/to/my/stats.json'
   head_stats_path: '/path/to/my/stats.json'
   token: ${{ secrets.GITHUB_TOKEN }}
+  comment_title: 'Custom title'
 ```
 
 ## Inputs
 
-| Inputs          | Required | Default | Description                                                                                   |
-|-----------------|----------|---------|-----------------------------------------------------------------------------------------------|
-| base_stats_path | true     |         | Path to the Webpack generated "stats.json" file from the base branch.                         |
-| head_stats_path | true     |         | Path to the Webpack generated "stats.json" file from the head branch.                         |
-| token           | true     |         | Github token so the package can publish a comment in the pull-request when the diff is ready. |
+| Inputs          | Required | Default           | Description                                                                                   |
+|-----------------|----------|-------------------|-----------------------------------------------------------------------------------------------|
+| base_stats_path | true     |                   | Path to the Webpack generated "stats.json" file from the base branch.                         |
+| head_stats_path | true     |                   | Path to the Webpack generated "stats.json" file from the head branch.                         |
+| token           | true     |                   | Github token so the package can publish a comment in the pull-request when the diff is ready. |
+| comment_title   | false    |'Bundle difference'| Customized GitHub comment title.                                                              |
 
 ## Usage example
 
