@@ -16,10 +16,12 @@ RUN npm run build
 
 FROM node:10.9.0-alpine as release
 
-COPY --from=build /app/dist .
+WORKDIR /
+
+COPY --from=build /app/dist/index.js ./index.js
 
 COPY package.json package-lock.json ./
 
 RUN npm ci --production
 
-CMD ["node", "index.js"]
+ENTRYPOINT ["node", "/index.js"]
