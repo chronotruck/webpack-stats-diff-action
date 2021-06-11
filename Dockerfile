@@ -18,4 +18,8 @@ FROM node:10.9.0-alpine as release
 
 COPY --from=build /app/dist .
 
+COPY package.json package-lock.json ./
+
+RUN npm ci --production
+
 CMD ["node", "index.js"]
