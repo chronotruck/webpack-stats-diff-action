@@ -57,11 +57,12 @@ async function run() {
       throw new Error('Cannot find the PR id.')
     }
 
+    const commentTitle = core.getInput('comment_title') || 'Bundle difference'
     await octokit.issues.createComment({
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
       issue_number: pullRequestId,
-      body: `## Bundle difference
+      body: `## ${commentTitle}
 ${summaryTable}
 `
     })
