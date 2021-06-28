@@ -15,6 +15,8 @@ with:
   head_stats_path: '/path/to/my/stats.json'
   token: ${{ secrets.GITHUB_TOKEN }}
   comment_title: 'Custom title'
+  announcement_percentage_threshold_increase: 0
+  announcement_percentage_threshold_decrease: 1.0
 ```
 
 ## Inputs
@@ -25,6 +27,8 @@ with:
 | head_stats_path | true     |                   | Path to the Webpack generated "stats.json" file from the head branch.                         |
 | token           | true     |                   | Github token so the package can publish a comment in the pull-request when the diff is ready. |
 | comment_title   | false    |'Bundle difference'| Customized GitHub comment title.                                                              |
+| announcement_percentage_threshold_increase | false | undefined | Only announces bundle difference when the diff percentage increase exceeds this value. |
+| announcement_percentage_threshold_decrease | false | undefined | Only announces bundle difference when the diff percentage decrease exceeds this value. |
 
 ## Usage example
 

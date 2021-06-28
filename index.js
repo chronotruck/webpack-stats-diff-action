@@ -12,6 +12,19 @@ const doesPathExists = path => {
   }
 }
 
+const validatePercentage = percentage => {
+  if (!percentage) {
+    return percentage
+  }
+
+  const value = Number(percentage)
+  if (isNaN(value) || !isFinite(value)) {
+    throw new Error(`unable to parse announcement threshold percentage as a number`)
+  }
+
+  return value
+}
+
 async function run() {
   try {
     const statsPaths = {
@@ -33,6 +46,24 @@ async function run() {
     }
 
     const diff = getStatsDiff(assets.base, assets.head, {})
+    console.log(diff.total)
+
+    const announcementThresholds = {
+      increase: validatePercentage(core.getInput('announcement_percentage_threshold_increase')),
+      decrease: validatePercentage(core.getInput('announcement_percentage_threshold_decrease')),
+    }
+
+    console.log(increase)
+    if (increase && diff.total.diffPercentage >= 0 && (diff.total.diffPercentage < increase || (diff.total.diffPercentage == 0 && increase == 0))) {
+      console.log('skipping adding comment because diff is under increase threshold')
+      return
+    }
+
+    console.log(decrease)
+    if (decrease && diff.total.diffPercentage <= 0 && (diff.total.diffPercentage > decrease || (diff.total.diffPercentage == 0 && decrease == 0))) {
+      console.log('skipping adding comment because diff is under decrease threshold')
+      return
+    }
 
     const summaryTable = markdownTable([
       [
