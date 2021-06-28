@@ -11,11 +11,14 @@ inputs:
   token:
     description: 'Github generated token'
     required: true
+  comment_title:
+    description: 'Customized GitHub comment title.'
+    required: false
   announcement_percentage_threshold_increase:
-    description: 'The minimum percentage increase in the diff bundle size for a comment to be added'
+    description: 'The minimum percentage increase in the diff bundle size for a comment to be added. The percentage should use a positive number (integer or floating point) value or zero.'
     required: false
   announcement_percentage_threshold_decrease:
-    description: 'The minimum percentage decrease in the diff bundle size for a comment to be added'
+    description: 'The minimum percentage decrease in the diff bundle size for a comment to be added. The percentage should use a negative numeric (integer or floating point) value or zero.'
     required: false
 branding:
   icon: 'package'
