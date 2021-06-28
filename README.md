@@ -16,7 +16,7 @@ with:
   token: ${{ secrets.GITHUB_TOKEN }}
   comment_title: 'Custom title'
   announcement_percentage_threshold_increase: 0
-  announcement_percentage_threshold_decrease: 1.0
+  announcement_percentage_threshold_decrease: -1.0
 ```
 
 ## Inputs
