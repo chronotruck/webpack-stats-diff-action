@@ -14,5 +14,4 @@ jobs:
         base_stats_path: ./demo/base/stats.json
         head_stats_path: ./demo/base/stats.json
         comment_title: 'Above increase threshold'
-        announcement_percentage_threshold_increase: 0
         announcement_percentage_threshold_decrease: 0
