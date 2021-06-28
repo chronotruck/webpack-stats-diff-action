@@ -13,7 +13,7 @@ const doesPathExists = path => {
 }
 
 const validatePercentage = percentage => {
-  if (!percentage) {
+  if (percentage != 0 && !percentage) {
     return percentage
   }
 
@@ -53,14 +53,14 @@ async function run() {
       decrease: validatePercentage(core.getInput('announcement_percentage_threshold_decrease')),
     }
 
-    console.log(announcementThresholds.increase)
-    if (announcementThresholds.increase && diff.total.diffPercentage >= 0 && (diff.total.diffPercentage < announcementThresholds.increase || (diff.total.diffPercentage == 0 && announcementThresholds.increase == 0))) {
+    console.log(announcementThresholds.decrease)
+    if (announcementThresholds.increase != null && diff.total.diffPercentage >= 0 && (diff.total.diffPercentage < announcementThresholds.increase || (diff.total.diffPercentage == 0 && announcementThresholds.increase == 0))) {
       console.log(`skipping adding comment because diff percentage ${diff.total.diffPercentage} is under the increase threshold of ${announcementThresholds.increase}`)
       return
     }
 
     console.log(announcementThresholds.decrease)
-    if (announcementThresholds.decrease && diff.total.diffPercentage <= 0 && (diff.total.diffPercentage > announcementThresholds.decrease || (diff.total.diffPercentage == 0 && announcementThresholds.decrease == 0))) {
+    if (announcementThresholds.decrease != null && diff.total.diffPercentage <= 0 && (diff.total.diffPercentage > announcementThresholds.decrease || (diff.total.diffPercentage == 0 && announcementThresholds.decrease == 0))) {
       console.log(`skipping adding comment because diff percentage ${diff.total.diffPercentage} is under the decrease threshold of ${announcementThresholds.decrease}`)
       return
     }
