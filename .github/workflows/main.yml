@@ -12,6 +12,4 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         base_stats_path: ./demo/base/stats.json
-        head_stats_path: ./demo/base/stats.json
-        comment_title: 'Above increase threshold'
-        announcement_percentage_threshold_decrease: 0
+        head_stats_path: ./demo/head/stats.json
