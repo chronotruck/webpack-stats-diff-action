@@ -53,14 +53,14 @@ async function run() {
       decrease: validatePercentage(core.getInput('announcement_percentage_threshold_decrease')),
     }
 
-    console.log(increase)
-    if (increase && diff.total.diffPercentage >= 0 && (diff.total.diffPercentage < increase || (diff.total.diffPercentage == 0 && increase == 0))) {
+    console.log(announcementThresholds.increase)
+    if (announcementThresholds.increase && diff.total.diffPercentage >= 0 && (diff.total.diffPercentage < announcementThresholds.increase || (diff.total.diffPercentage == 0 && announcementThresholds.increase == 0))) {
       console.log('skipping adding comment because diff is under increase threshold')
       return
     }
 
-    console.log(decrease)
-    if (decrease && diff.total.diffPercentage <= 0 && (diff.total.diffPercentage > decrease || (diff.total.diffPercentage == 0 && decrease == 0))) {
+    console.log(announcementThresholds.decrease)
+    if (announcementThresholds.decrease && diff.total.diffPercentage <= 0 && (diff.total.diffPercentage > announcementThresholds.decrease || (diff.total.diffPercentage == 0 && announcementThresholds.decrease == 0))) {
       console.log('skipping adding comment because diff is under decrease threshold')
       return
     }
