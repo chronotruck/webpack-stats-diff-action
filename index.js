@@ -55,13 +55,13 @@ async function run() {
 
     console.log(announcementThresholds.increase)
     if (announcementThresholds.increase && diff.total.diffPercentage >= 0 && (diff.total.diffPercentage < announcementThresholds.increase || (diff.total.diffPercentage == 0 && announcementThresholds.increase == 0))) {
-      console.log('skipping adding comment because diff is under increase threshold')
+      console.log(`skipping adding comment because diff percentage ${diff.total.diffPercentage} is under the increase threshold of ${announcementThresholds.increase}`)
       return
     }
 
     console.log(announcementThresholds.decrease)
     if (announcementThresholds.decrease && diff.total.diffPercentage <= 0 && (diff.total.diffPercentage > announcementThresholds.decrease || (diff.total.diffPercentage == 0 && announcementThresholds.decrease == 0))) {
-      console.log('skipping adding comment because diff is under decrease threshold')
+      console.log(`skipping adding comment because diff percentage ${diff.total.diffPercentage} is under the decrease threshold of ${announcementThresholds.decrease}`)
       return
     }
 
