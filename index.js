@@ -46,7 +46,6 @@ async function run() {
     }
 
     const diff = getStatsDiff(assets.base, assets.head, {})
-    console.log(diff.total)
 
     const announcementThresholds = {
       increase: validatePercentage(core.getInput('announcement_percentage_threshold_increase')),
