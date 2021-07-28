@@ -1,9 +1,10 @@
 name: "Chunk difference"
 on:
-  pull_request:
+  push:
 
 jobs:
-  demo:
+  simple-demo:
+    name: 'Simple demo without any config'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -13,3 +14,16 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         base_stats_path: ./demo/base/stats.json
         head_stats_path: ./demo/head/stats.json
+
+  thresholds:
+    name: 'Demo with threshold'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Diff
+      uses: ./
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        base_stats_path: ./demo/base/stats.json
+        head_stats_path: ./demo/head/stats.json
+        announcement_percentage_threshold_decrease: 1
