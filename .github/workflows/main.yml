@@ -15,8 +15,8 @@ jobs:
         base_stats_path: ./demo/base/stats.json
         head_stats_path: ./demo/head/stats.json
 
-  thresholds:
-    name: 'Demo with threshold'
+  threshold-decrease:
+    name: 'Demo with threshold decrease'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -27,3 +27,17 @@ jobs:
         base_stats_path: ./demo/base/stats.json
         head_stats_path: ./demo/head/stats.json
         announcement_percentage_threshold_decrease: 1
+
+  # Note that this job should not print anything in the comms. as the diff percentage is negative.
+  threshold-increase:
+    name: 'Demo with threshold increase'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Diff
+      uses: ./
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        base_stats_path: ./demo/base/stats.json
+        head_stats_path: ./demo/head/stats.json
+        announcement_percentage_threshold_increase: 3
