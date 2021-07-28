@@ -1,6 +1,6 @@
 name: "Chunk difference"
 on:
-  push:
+  pull_request:
 
 jobs:
   simple-demo:
