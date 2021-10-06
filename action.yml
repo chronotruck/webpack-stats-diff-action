@@ -14,12 +14,17 @@ inputs:
   comment_title:
     description: 'Customized GitHub comment title.'
     required: false
-  announcement_percentage_threshold_increase:
-    description: 'The minimum percentage increase in the diff bundle size for a comment to be added. The percentage should use a positive number (integer or floating point) value or zero.'
+  threshold:
+    description: 'The minimum percentage increase/decrease in the diff bundle size for a comment to be added. passed directly to Number constructor.'
     required: false
-  announcement_percentage_threshold_decrease:
-    description: 'The minimum percentage decrease in the diff bundle size for a comment to be added. The percentage should use a negative numeric (integer or floating point) value or zero.'
+    default: '0'
+  extensions:
+    description: 'Extensions to filter to, in a comma-delineated string, with or without periods'
     required: false
+  all:
+    description: If you want to include files that didn't change, set this to 'true'
+    required: false
+    default: 'false'
 branding:
   icon: 'package'
   color: 'green'
