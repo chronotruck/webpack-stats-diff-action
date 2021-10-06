@@ -75,8 +75,8 @@ async function run() {
     ]);
 
     const commentBody = `
-    ## ${commentTitle}
-    ${markdown}
+## ${commentTitle}
+${markdown}
     `
     console.log(commentBody);
 
