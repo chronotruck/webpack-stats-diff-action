@@ -6,27 +6,46 @@ const { getStatsDiff } = require('webpack-stats-diff')
 const fileSize = require('filesize')
 const markdownTable = require('markdown-table')
 
-const doesPathExists = path => {
+const doesPathExist = path => {
   if (!fs.existsSync(path)) {
-    throw new Error(`${path} does not exist!`)
+    throw new Error(`${path} does not exist!`);
   }
 }
 
-const validatePercentage = percentage => {
-  if (percentage != 0 && !percentage) {
-    return percentage
-  }
+function createDiffRows(diffSection) {
+  return diffSection.map((row) => (createDiffRow(row)));
+}
 
-  const value = Number(percentage)
-  if (isNaN(value) || !isFinite(value)) {
-    throw new Error(`unable to parse announcement threshold percentage as a number`)
-  }
+function createDiffRow(data) {
+  return [
+    data.name,
+    fileSize(data.oldSize),
+    fileSize(data.newSize), 
+    `${fileSize(data.diff)} (${data.diffPercentage.toFixed(2)}%)`
+  ];
+}
 
-  return value
+// get assets from path to stats.json, using first child if there are multiple bundles
+function getAssets(path) {
+  const json = require(path);
+  if (json.children) {
+    return json.children[0].assets;
+  }
+  return json.assets;
 }
 
 async function run() {
   try {
+    let extensions = core.getInput('extensions');
+    if (extensions) {
+      extensions = extensions.split(',');
+    }
+
+    const threshold = Number(core.getInput('threshold'));
+    const commentTitle = core.getInput('comment_title') || 'Bundle difference'
+    const all = core.getInput('all') === 'true';
+
+    
     const statsPaths = {
       base: core.getInput('base_stats_path'),
       head: core.getInput('head_stats_path')
@@ -37,62 +56,56 @@ async function run() {
       head: path.resolve(process.cwd(), statsPaths.head)
     }
 
-    doesPathExists(paths.base)
-    doesPathExists(paths.head)
+    doesPathExist(paths.base);
+    doesPathExist(paths.head);
 
     const assets = {
-      base: require(paths.base).assets,
-      head: require(paths.head).assets
+      base: getAssets(paths.base),
+      head: getAssets(paths.head)
     }
 
-    const diff = getStatsDiff(assets.base, assets.head, {})
+    const diff = getStatsDiff(assets.base, assets.head, {extensions, threshold});
 
-    const announcementThresholds = {
-      increase: validatePercentage(core.getInput('announcement_percentage_threshold_increase')),
-      decrease: validatePercentage(core.getInput('announcement_percentage_threshold_decrease')),
-    }
+    console.log(diff);
 
-    if (announcementThresholds.increase != null && diff.total.diffPercentage >= 0 && (diff.total.diffPercentage < announcementThresholds.increase || (diff.total.diffPercentage == 0 && announcementThresholds.increase == 0))) {
-      console.log(`skipping adding comment because diff percentage ${diff.total.diffPercentage} is under the increase threshold of ${announcementThresholds.increase}`)
-      return
-    }
-
-    if (announcementThresholds.decrease != null && diff.total.diffPercentage <= 0 && (diff.total.diffPercentage > announcementThresholds.decrease || (diff.total.diffPercentage == 0 && announcementThresholds.decrease == 0))) {
-      console.log(`skipping adding comment because diff percentage ${diff.total.diffPercentage} is under the decrease threshold of ${announcementThresholds.decrease}`)
-      return
-    }
-
-    const summaryTable = markdownTable([
+    const markdown = markdownTable([
       [
+        'Name',
         'Old size',
         'New size',
         'Diff'
       ],
-      [
-        fileSize(diff.total.oldSize),
-        fileSize(diff.total.newSize), 
-        `${fileSize(diff.total.diff)} (${diff.total.diffPercentage.toFixed(2)}%)`
-      ]
-    ])
-    
+      createDiffRow(diff.total),
+      ...createDiffRows(diff.added),
+      ...createDiffRows(diff.bigger),
+      ...createDiffRows(diff.smaller),
+      ...createDiffRows(diff.removed),
+      ...(all ? createDiffRows(diff.sameSize) : [])
+    ]);
+
+    const commentBody = `
+## ${commentTitle}
+${markdown}
+    `
+    console.log(commentBody);
+
+
     /**
      * Publish a comment in the PR with the diff result.
      */
-    const octokit = github.getOctokit(core.getInput('token'))
+     const octokit = github.getOctokit(core.getInput('token'))
 
-    const pullRequestId = github.context.issue.number
-    if (!pullRequestId) {
-      throw new Error('Cannot find the PR id.')
-    }
+     const pullRequestId = github.context.issue.number
+     if (!pullRequestId) {
+       throw new Error('Cannot find the PR id.')
+     }
 
-    const commentTitle = core.getInput('comment_title') || 'Bundle difference'
+
     await octokit.issues.createComment({
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
       issue_number: pullRequestId,
-      body: `## ${commentTitle}
-${summaryTable}
-`
+      body: commentBody
     })
   }
   catch (error) {

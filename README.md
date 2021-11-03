@@ -1,6 +1,6 @@
 # Webpack Stats Diff
 
-Creates a comment inside your Pull-Request with the difference between two Webpack stats files.
+this is a fork of Chronotruck's webpack-stats-diff-action. It creates a comment inside your Pull-Request with the difference between two Webpack stats files. Notably, this version shows the total at the top and a detailed breakdown file-by-file below that.
 
 ![Comment demo](./docs/splash.png)
 
@@ -9,14 +9,15 @@ Creates a comment inside your Pull-Request with the difference between two Webpa
 To use this Github action, in your steps you may have:
 
 ```yml
-uses: chronotruck/webpack-stats-diff-action@1.0.0
+uses: wistia/detailed-webpack-stats-diff-action@2.0.0
 with:
   base_stats_path: '/path/to/my/stats.json'
   head_stats_path: '/path/to/my/stats.json'
   token: ${{ secrets.GITHUB_TOKEN }}
   comment_title: 'Custom title'
-  announcement_percentage_threshold_increase: 0
-  announcement_percentage_threshold_decrease: -1.0
+  threshold: 1
+  extensions: js,css
+  all: true
 ```
 
 ## Inputs
@@ -27,8 +28,9 @@ with:
 | head_stats_path | true     |                   | Path to the Webpack generated "stats.json" file from the head branch.                         |
 | token           | true     |                   | Github token so the package can publish a comment in the pull-request when the diff is ready. |
 | comment_title   | false    |'Bundle difference'| Customized GitHub comment title.                                                              |
-| announcement_percentage_threshold_increase | false | undefined | Only announces bundle difference when the diff percentage increase exceeds this value.  The value should be a positive numeric value (integer or floating point) or zero. |
-| announcement_percentage_threshold_decrease | false | undefined | Only announces bundle difference when the diff percentage decrease exceeds this value. The value should be a negative numeric value (integer or floating point) or zero.|
+| threshold       | false    | 0                 | The minimum percentage increase/decrease in the diff bundle size for a comment to be added. passed directly to Number constructor.     |
+| extensions      | false    |                   | Extensions to filter to, in a comma-delineated string, with or without periods                |
+| all             | true     | false             | If you want to include files that didn't change, set this to 'true'                           |
 
 ## Usage example
 
@@ -104,7 +106,7 @@ Now, in a new job we can retrieve both of our saved stats from the artifacts and
       with:
         name: head-stats
     - name: Diff between base & head
-      uses: chronotruck/webpack-stats-diff-action@1.0.0
+      uses: wistia/detailed-webpack-stats-diff-action@2.0.0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         base_stats_path: ./base-stats/stats.json
@@ -116,4 +118,3 @@ That's it! When the compare job will be executed, it will post a comment in the 
 ## License
 
 This project is licensed under MIT License.
-Open source time proudly sponsored by [Chronotruck](https://developers.chronotruck.com/?ref=github-webpack-stats-diff).
