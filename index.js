@@ -6,9 +6,9 @@ const { getStatsDiff } = require('webpack-stats-diff')
 const fileSize = require('filesize')
 const markdownTable = require('markdown-table')
 
-const doesPathExists = path => {
+const doesPathExist = path => {
   if (!fs.existsSync(path)) {
-    throw new Error(`${path} does not exist!`)
+    throw new Error(`${path} does not exist!`);
   }
 }
 
@@ -23,6 +23,15 @@ function createDiffRow(data) {
     fileSize(data.newSize), 
     `${fileSize(data.diff)} (${data.diffPercentage.toFixed(2)}%)`
   ];
+}
+
+// get assets from path to stats.json, using first child if there are multiple bundles
+function getAssets(path) {
+  const json = require(path);
+  if (json.children) {
+    return json.children[0].assets;
+  }
+  return json.assets;
 }
 
 async function run() {
@@ -47,15 +56,15 @@ async function run() {
       head: path.resolve(process.cwd(), statsPaths.head)
     }
 
-    doesPathExists(paths.base)
-    doesPathExists(paths.head)
+    doesPathExist(paths.base);
+    doesPathExist(paths.head);
 
     const assets = {
-      base: require(paths.base).assets,
-      head: require(paths.head).assets
+      base: getAssets(paths.base),
+      head: getAssets(paths.head)
     }
 
-    const diff = getStatsDiff(assets.base, assets.head, {extensions, threshold})
+    const diff = getStatsDiff(assets.base, assets.head, {extensions, threshold});
 
     console.log(diff);
 
