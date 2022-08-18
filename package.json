@@ -11,7 +11,7 @@
   "author": "William DA SILVA <william.da.silva@chronotruck.com>",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.4.0",
+    "@actions/core": "^1.9.1",
     "@actions/github": "^3.0.0",
     "filesize": "^6.3.0",
     "markdown-table": "^2.0.0",
